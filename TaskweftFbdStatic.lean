@@ -1,5 +1,5 @@
 /-
-Port of Project-AGRAFE/GRAFCET-static-analysis (MIT) to Lean 4.
+Port of Project-AGRAFE/FBD-static-analysis (MIT) to Lean 4.
 
 Two analyses per the AGRAFE tool:
 
@@ -17,9 +17,9 @@ functions here to the semantics.
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 
-namespace TaskweftGrafcetStatic
+namespace TaskweftFbdStatic
 
--- The compact GRAFCET DSL from RFD 2143, in Lean. Step and transition
+-- The compact FBD DSL from RFD 2143, in Lean. Step and transition
 -- ids are strings so the parser can hand a JSON `S` array straight in.
 
 structure StepId where
@@ -131,4 +131,4 @@ partial def SFC.concurrentPairs (sfc : SFC) (fuel : Nat := 10000) : List (StepId
         loop (rest ++ [sfc.fire m]) (m :: visited) (pairs ++ pairwise).eraseDups k
   loop [init] [] [] fuel
 
-end TaskweftGrafcetStatic
+end TaskweftFbdStatic

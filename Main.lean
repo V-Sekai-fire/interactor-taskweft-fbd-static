@@ -4,9 +4,9 @@ worked example) and print its reachable steps + concurrent pairs.
 
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
-import TaskweftGrafcetStatic
+import TaskweftFbdStatic
 
-open TaskweftGrafcetStatic
+open TaskweftFbdStatic
 
 def blocksGetOr : SFC :=
   let init := { id := ⟨"init"⟩, initial := true, storedTarget := none : Step }

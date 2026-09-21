@@ -1,20 +1,20 @@
 /-
-JSON I/O for the analyser. Parses the compact GRAFCET profile (RFD 2143)
+JSON I/O for the analyser. Parses the compact FBD profile (RFD 2143)
 into `SFC`, runs both structural analyses, and encodes the result.
 
 `@[export analyse_sfc]` exposes it under the plain C name `analyse_sfc`;
-the C bridge in `c_src/grafcet_static_bridge.c` wraps the string
+the C bridge in `c_src/fbd_static_bridge.c` wraps the string
 marshaling and refcount management.
 
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import Lean.Data.Json
-import TaskweftGrafcetStatic
+import TaskweftFbdStatic
 
-namespace TaskweftGrafcetStatic
+namespace TaskweftFbdStatic
 open Lean
 
-/-- Extract the `S` array from a parsed compact GRAFCET JSON and build
+/-- Extract the `S` array from a parsed compact FBD JSON and build
     an `SFC` from it. This is intentionally forgiving; a malformed row
     is skipped, so a partial chart still analyses. -/
 def sfcFromJson (json : Json) : SFC := Id.run do
@@ -95,4 +95,4 @@ def analyseSFC (input : String) : String :=
   | .ok j =>
       (analysisJson (sfcFromJson j)).compress
 
-end TaskweftGrafcetStatic
+end TaskweftFbdStatic

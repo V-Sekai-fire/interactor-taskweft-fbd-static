@@ -10,3 +10,6 @@ build/
 priv/*.so
 priv/*.dylib
 priv/*.dll
+libfbd_static.so
+libfbd_static.dylib
+libfbd_static.dll

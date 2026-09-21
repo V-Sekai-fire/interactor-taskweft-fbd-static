@@ -5,12 +5,12 @@
  *
  * SPDX-License-Identifier: MIT OR Apache-2.0
  */
-#include "grafcet_static.h"
+#include "fbd_static.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-char *grafcet_static_analyse(const char *sfc_json) {
+char *fbd_static_analyse(const char *sfc_json) {
     (void)sfc_json;
     static const char msg[] =
         "{\"error\":\"stub\","
@@ -22,6 +22,6 @@ char *grafcet_static_analyse(const char *sfc_json) {
     return out;
 }
 
-void grafcet_static_free(char *buf) {
+void fbd_static_free(char *buf) {
     free(buf);
 }
