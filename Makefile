@@ -1,10 +1,10 @@
-# Build libgrafcet_static: the C bridge linked against the Lean runtime and
+# Build libfbd_static: the C bridge linked against the Lean runtime and
 # the Lean-produced module library. `lake build` must run first.
 #
 # lake names that library for the platform and this named it .dylib
 # everywhere, so a Linux link failed on a file lake never produces:
 #
-#   ld: cannot find -l:libtaskweft_..._TaskweftGrafcetStatic.dylib
+#   ld: cannot find -l:libtaskweft_..._TaskweftFbdStatic.dylib
 #
 # Windows differs in two ways, not one: the extension is .dll AND there is no
 # lib prefix. Measured by running lake there, which is the only way it shows --
@@ -28,7 +28,7 @@ LEAN_INCLUDE   := $(LEAN_TOOLCHAIN)/include
 LEAN_LIB       := $(LEAN_TOOLCHAIN)/lib/lean
 
 LAKE_LIB       := .lake/build/lib
-MODULE_NAME    := taskweft_x2dgrafcet_x2dstatic_TaskweftGrafcetStatic
+MODULE_NAME    := taskweft_x2dfbd_x2dstatic_TaskweftFbdStatic
 
 ifeq ($(UNAME_S),Darwin)
     MODULE_FILE := lib$(MODULE_NAME).dylib
@@ -45,22 +45,22 @@ CFLAGS := -fPIC -O2 -Wall -I$(LEAN_INCLUDE) -Ic_src
 LDFLAGS_MAC := -shared -Wl,-rpath,@loader_path -Wl,-rpath,$(LEAN_LIB)
 
 ifeq ($(UNAME_S),Darwin)
-    OUT := libgrafcet_static.dylib
-    LDFLAGS := $(LDFLAGS_MAC) -install_name @rpath/libgrafcet_static.dylib \
+    OUT := libfbd_static.dylib
+    LDFLAGS := $(LDFLAGS_MAC) -install_name @rpath/libfbd_static.dylib \
                -L$(LEAN_LIB) -Wl,-rpath,$(LEAN_LIB) \
                -lleanshared -Wl,$(MODULE_LIB)
 else
     # -L$(LAKE_LIB) as well as the toolchain's: the module library lake built
     # lives there, and -l: searches only the directories -L names.
-    OUT := libgrafcet_static.so
+    OUT := libfbd_static.so
     LDFLAGS := -shared -L$(LEAN_LIB) -L$(LAKE_LIB) -Wl,-rpath,$$ORIGIN \
                -Wl,-rpath,$(LEAN_LIB) -lleanshared -l:$(notdir $(MODULE_LIB))
 endif
 
 all: $(OUT)
 
-$(OUT): c_src/grafcet_static_bridge.c $(MODULE_LIB)
-	$(CC) $(CFLAGS) c_src/grafcet_static_bridge.c $(LDFLAGS) -o $@
+$(OUT): c_src/fbd_static_bridge.c $(MODULE_LIB)
+	$(CC) $(CFLAGS) c_src/fbd_static_bridge.c $(LDFLAGS) -o $@
 
 $(MODULE_LIB):
 	lake build

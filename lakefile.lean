@@ -1,13 +1,13 @@
 import Lake
 open Lake DSL
 
-package «taskweft-grafcet-static» where
+package «taskweft-fbd-static» where
   leanOptions := #[⟨`autoImplicit, false⟩]
 
-lean_lib TaskweftGrafcetStatic where
-  roots := #[`TaskweftGrafcetStatic, `TaskweftGrafcetStatic.Analyse]
+lean_lib TaskweftFbdStatic where
+  roots := #[`TaskweftFbdStatic, `TaskweftFbdStatic.Analyse]
   precompileModules := true
 
 @[default_target]
-lean_exe grafcet_static where
+lean_exe fbd_static where
   root := `Main

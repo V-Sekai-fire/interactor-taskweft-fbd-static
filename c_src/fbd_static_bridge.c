@@ -2,12 +2,12 @@
  *
  * Marshals plain C strings to and from Lean strings, initialises the
  * Lean runtime once, and exposes the plain C ABI declared in
- * grafcet_static.h. Modelled on the "calling Lean 4 from C" pattern
+ * fbd_static.h. Modelled on the "calling Lean 4 from C" pattern
  * in the Lean 4 manual, appendix "Foreign Function Interface".
  *
  * SPDX-License-Identifier: MIT OR Apache-2.0
  */
-#include "grafcet_static.h"
+#include "fbd_static.h"
 
 #include <lean/lean.h>
 
@@ -20,8 +20,8 @@
  * declare them here, matching the mangled names lake uses (dashes in the
  * package name become `_x2d`). */
 extern void lean_initialize_runtime_module(void);
-extern lean_object *initialize_taskweft_x2dgrafcet_x2dstatic_TaskweftGrafcetStatic(uint8_t builtin);
-extern lean_object *initialize_taskweft_x2dgrafcet_x2dstatic_TaskweftGrafcetStatic_Analyse(uint8_t builtin);
+extern lean_object *initialize_taskweft_x2dfbd_x2dstatic_TaskweftFbdStatic(uint8_t builtin);
+extern lean_object *initialize_taskweft_x2dfbd_x2dstatic_TaskweftFbdStatic_Analyse(uint8_t builtin);
 extern lean_object *analyse_sfc(lean_object *input);
 
 static pthread_once_t g_init_once = PTHREAD_ONCE_INIT;
@@ -30,14 +30,14 @@ static int g_init_ok = 0;
 static void init_lean(void) {
     lean_initialize_runtime_module();
     lean_object *io_res =
-        initialize_taskweft_x2dgrafcet_x2dstatic_TaskweftGrafcetStatic(1);
+        initialize_taskweft_x2dfbd_x2dstatic_TaskweftFbdStatic(1);
     if (lean_io_result_is_error(io_res)) {
         lean_dec_ref(io_res);
         return;
     }
     lean_dec_ref(io_res);
     io_res =
-        initialize_taskweft_x2dgrafcet_x2dstatic_TaskweftGrafcetStatic_Analyse(1);
+        initialize_taskweft_x2dfbd_x2dstatic_TaskweftFbdStatic_Analyse(1);
     if (lean_io_result_is_error(io_res)) {
         lean_dec_ref(io_res);
         return;
@@ -47,7 +47,7 @@ static void init_lean(void) {
     g_init_ok = 1;
 }
 
-char *grafcet_static_analyse(const char *sfc_json) {
+char *fbd_static_analyse(const char *sfc_json) {
     pthread_once(&g_init_once, init_lean);
     if (!g_init_ok) {
         const char msg[] = "{\"error\":\"init\"}";
@@ -70,6 +70,6 @@ char *grafcet_static_analyse(const char *sfc_json) {
     return out;
 }
 
-void grafcet_static_free(char *buf) {
+void fbd_static_free(char *buf) {
     free(buf);
 }
