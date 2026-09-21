@@ -14,14 +14,22 @@
 #   Linux    lib<name>.so
 #   Windows     <name>.dll
 
-LEAN_TOOLCHAIN := $(shell lean --print-prefix)
+UNAME_S := $(shell uname -s)
+
+# lean --print-prefix answers with a Windows path on Windows, backslashes and
+# all, and a compiler running under MSYS cannot use that as -I: the header is
+# there and clang reports "'lean/lean.h' file not found". cygpath converts it.
+ifneq (,$(filter MINGW% MSYS% CYGWIN%,$(UNAME_S)))
+    LEAN_TOOLCHAIN := $(shell cygpath -u "$(shell lean --print-prefix)")
+else
+    LEAN_TOOLCHAIN := $(shell lean --print-prefix)
+endif
 LEAN_INCLUDE   := $(LEAN_TOOLCHAIN)/include
 LEAN_LIB       := $(LEAN_TOOLCHAIN)/lib/lean
 
 LAKE_LIB       := .lake/build/lib
 MODULE_NAME    := taskweft_x2dgrafcet_x2dstatic_TaskweftGrafcetStatic
 
-UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
     MODULE_FILE := lib$(MODULE_NAME).dylib
 else ifneq (,$(filter MINGW% MSYS% CYGWIN%,$(UNAME_S)))
@@ -42,8 +50,10 @@ ifeq ($(UNAME_S),Darwin)
                -L$(LEAN_LIB) -Wl,-rpath,$(LEAN_LIB) \
                -lleanshared -Wl,$(MODULE_LIB)
 else
+    # -L$(LAKE_LIB) as well as the toolchain's: the module library lake built
+    # lives there, and -l: searches only the directories -L names.
     OUT := libgrafcet_static.so
-    LDFLAGS := -shared -L$(LEAN_LIB) -Wl,-rpath,$$ORIGIN \
+    LDFLAGS := -shared -L$(LEAN_LIB) -L$(LAKE_LIB) -Wl,-rpath,$$ORIGIN \
                -Wl,-rpath,$(LEAN_LIB) -lleanshared -l:$(notdir $(MODULE_LIB))
 endif
 
